@@ -1,12 +1,18 @@
 const knex = require("../db/connection");
 //This file is going to have all of the SQL queries for Theaters
-function getTheaters() {
-  return knex("theaters as t")
-    .join("movies_theaters as mt", "t.theater_id", "mt.theater_id")
-    .join("movies as m", "mt.movie_id", "m.movie_id")
-    .select("*")
-    .distinct();
+function list() {
+  return knex("theaters").select("*");
 }
+
+function getMovies(theaterId) {
+  return knex("theaters as t")
+    .join("movies_theaters as mt", "mt.theater_id", "t.theater_id")
+    .join("movies as m", "m.movie_id", "mt.movie_id")
+    .select("m.*", "mt.is_showing")
+    .where({ "t.theater_id": theaterId });
+}
+
 module.exports = {
-  getTheaters,
+  list,
+  getMovies,
 };
